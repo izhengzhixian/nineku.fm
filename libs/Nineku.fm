@@ -507,11 +507,19 @@ Ninekufm.prototype.keypress = function (){
 				self.volume.emit("end",{nostart:true});
 				self.run_fenge(self.show_pos[0], self.show_pos[1]);
 			}else if (ch == "s"){
-				self.user_config["data"]["custom"].fenge_list[0]["data"].push(self.cur_music);
-				self.settip("添加到喜爱一首歌曲成功");
-			}else if (ch == "T"){
-				self.user_config["data"]["custom"].fenge_list[1]["data"].push(self.cur_music);
-				self.settip("添加到讨厌一首歌曲成功");
+				if (self.check_love(self.cur_music)){
+					self.settip("本歌曲已经添加到喜爱，不能重复添加");
+				}else{
+					self.user_config["data"]["custom"].fenge_list[0]["data"].push(self.cur_music);
+					self.settip("添加到喜爱一首歌曲成功");
+				}
+			}else if (ch == "t"){
+				if (self.check_hate(self.cur_music)){
+					self.settip("本歌曲已经添加到讨厌，不能重复添加");
+				}else{
+					self.user_config["data"]["custom"].fenge_list[1]["data"].push(self.cur_music);
+					self.settip("添加到讨厌一首歌曲成功");
+				}
 			}else if (ch == "d"){
 				var ret_index = self.music_list.indexOf(self.cur_music);
 				if (ret_index < 0){
@@ -633,8 +641,15 @@ Ninekufm.prototype.get_lrc = function (){
 		});
 	}
 };
+Ninekufm.prototype.check_love = function (music){
+	var love = this.user_config["data"]["custom"].fenge_list[0]["data"];
+	for (var i = 0; i < love.length; i++){
+		if (love[i]["gqid"] == music["gqid"])
+			return true;
+	}
+	return false;
+}
 Ninekufm.prototype.check_hate = function (music){
-	music["gqid"]
 	var hate = this.user_config["data"]["custom"].fenge_list[1]["data"];
 	for (var i = 0; i < hate.length; i++){
 		if (hate[i]["gqid"] == music["gqid"])
