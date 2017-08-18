@@ -1,0 +1,23 @@
+{
+  "name": "nineku.fm",
+  "version": "1.0.0",
+  "description": "九酷fm终端版，依赖于ffmpeg",
+  "repository": "https://github.com/zzx666/nineku.fm",
+  "main": "index.js",
+  "bin": "bin/nineku.fm",
+  "dependencies": {
+    "cheerio": "*",
+    "fluent-ffmpeg": "*",
+    "keypress": "*",
+    "pcm-volume": "*",
+    "request": "*",
+    "speaker": "*",
+    "readline-sync": "*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "bin/nineku.fm"
+  },
+  "author": "zzx666",
+  "license": "ISC"
+}
