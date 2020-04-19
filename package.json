@@ -1,8 +1,8 @@
 {
   "name": "nineku.fm",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "九酷fm终端版，依赖于ffmpeg",
-  "repository": "https://github.com/zzx666/nineku.fm",
+  "repository": "https://github.com/izhengzhixian/nineku.fm",
   "main": "index.js",
   "bin": "bin/nineku.fm",
   "dependencies": {
@@ -18,8 +18,7 @@
   "scripts": {
     "start": "bin/nineku.fm"
   },
-  "author": "zzx666",
+  "author": "izhengzhixian",
   "license": "ISC",
-  "_from": "nineku.fm@1.0.4",
-  "_resolved": "http://registry.npm.taobao.org/nineku.fm/download/nineku.fm-1.0.4.tgz"
+  "_from": "nineku.fm@1.0.5"
 }
