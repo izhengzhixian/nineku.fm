@@ -1,24 +1,30 @@
 {
   "name": "nineku.fm",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "九酷fm终端版，依赖于ffmpeg",
   "repository": "https://github.com/izhengzhixian/nineku.fm",
   "main": "index.js",
-  "bin": "bin/nineku.fm",
-  "dependencies": {
-    "cheerio": "*",
-    "fluent-ffmpeg": "*",
-    "keypress": "*",
-    "pcm-volume": "*",
-    "request": "*",
-    "speaker": "*",
-    "readline-sync": "*"
+  "bin": {
+      "nineku.fm": "bin/nineku.fm.js"
   },
-  "devDependencies": {},
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "fluent-ffmpeg": "^2.1.2",
+    "keypress": "^0.2.1",
+    "node-fetch": "^2.6.1",
+    "pcm-volume": "^1.0.0",
+    "proxy-agent": "^4.0.1",
+    "speaker": "^0.5.3"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.29",
+    "@types/node": "^15.12.4",
+    "@types/node-fetch": "^2.5.10"
+  },
   "scripts": {
-    "start": "bin/nineku.fm"
+    "start": "node dist/bin/nineku.fm",
+    "build": "rm -rf dist && tsc && cp package.json dist"
   },
   "author": "izhengzhixian",
-  "license": "ISC",
-  "_from": "nineku.fm@1.0.5"
+  "license": "ISC"
 }
