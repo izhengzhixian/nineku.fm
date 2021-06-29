@@ -24,15 +24,7 @@ sudo apt install libasound2-dev ffmpeg -y
 
 npm安装
 
-    `npm install -g nineku.fm`
-
-github安装
-
-    `git clone http://github.com/izhengzhixian/nineku.fm`
-
-    `cd nineku.fm`
-
-    `npm install`
+    npm install -g nineku.fm
 
 windows64位下安装编译会出现问题，需要在cmd中更改成64位编译模式，请参考：
 https://msdn.microsoft.com/zh-cn/library/x4d2c09s.aspx
@@ -47,6 +39,12 @@ https://msdn.microsoft.com/zh-cn/library/x4d2c09s.aspx
 ### 日志：
 
 -----------------------------
+
+### v2.0.0
+1. 用typescript重构
+2. 删除云端保存功能
+3. 删除服务器模式
+4. 适配终端大小改变
 
 ### v1.0.5
 1. 删除云端保存功能
