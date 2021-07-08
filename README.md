@@ -27,6 +27,7 @@ npm安装
     npm install -g nineku.fm
 
 MAC下安装
+
     npm install -g nineku.fm --mpg123-backend=openal
 
 windows64位下安装编译会出现问题，需要在cmd中更改成64位编译模式，请参考：
