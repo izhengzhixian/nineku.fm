@@ -55,7 +55,7 @@ class NinekuMusic extends Music {
         this._lyrics = new NinekuLyrics();
         let lrc_group_id = Math.floor(this._data["gqid"] / 10000) + 1;
         let gqid = this._data["gqid"];
-        let lrc = `http://www.9ku.com/html/lrc/${lrc_group_id}/${gqid}.js`;
+        let lrc = `https://www.9ku.com/html/lrc/${lrc_group_id}/${gqid}.js`;
         await this._lyrics.loadURL(lrc);
         return this._lyrics;
     }
@@ -103,7 +103,7 @@ export default class Loader implements CategoryLoader {
     }
 
     async getCategories(): Promise<Array<Category>> {
-        let url = "http://www.9ku.com/fm/";
+        let url = "https://www.9ku.com/fm/";
         let resp = await fetch(url);
         let $ = cheerio.load(await resp.buffer());
         let fenge_head = $("ul.fmNav.clearfix li a");
@@ -121,7 +121,7 @@ export default class Loader implements CategoryLoader {
                 let name = (<cheerio.TagElement>(<cheerio.TagElement>child
                     .children[1]).children[3]).children[0].data;
                 let data_id = child.attribs["data-id"];
-                let link = `http://www.9ku.com/fm/fenge/${data_id}.js`;
+                let link = `https://www.9ku.com/fm/fenge/${data_id}.js`;
                 category.getStyles().push(new NinekuMusicStyle(name, link));
             });
         });

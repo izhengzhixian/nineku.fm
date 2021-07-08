@@ -34,13 +34,25 @@ export default class Shell {
     _style_pos = 0;
     _volume = 50;
     _next = true;
+    _music_index = 0;
+    _daemon = false;
 
     constructor() {
+        this._daemon = process.argv.indexOf("daemon") >= 0;
+    }
+
+    log(msg: any) {
+        if (this._daemon) {
+            console.log(msg);
+        }
     }
 
     _musicCloseCallback() {
+        this.log('closeCallback');
         if (this._player) {
+            this.log('closeCallback clear');
             this.clearMusic();
+            return;
         }
         if (this._next) {
             this.randomMusic();
@@ -63,7 +75,7 @@ export default class Shell {
     }
 
     run() {
-        this._ui.setShow(process.argv.indexOf("daemon") < 0);
+        this._ui.setShow(!this._daemon);
         this._ui.setKeyPressCallback(key => this.keypress(key));
         this._ui.run(() => this.refreshUI());
 
@@ -133,6 +145,7 @@ export default class Shell {
     }
 
     randomMusic() {
+        this.log('randomMusic');
         let music = randomItems(this._musics);
         this._music = music;
         this._loadMusic();
@@ -145,9 +158,12 @@ export default class Shell {
 
     async _loadMusic() {
         this._player = new SoundPlayer(this.getVolume());
-        this._player.setCloseCallback(() => {
-            this._musicCloseCallback();
-        });
+        if (this._music_index < 100) {
+            this._player.setCloseCallback(() => {
+                this._musicCloseCallback();
+            });
+        }
+        this._music_index++;
         await this._player.load(this._music.getURI());
         if (this._player) {
             this.startMusic();
@@ -169,6 +185,7 @@ export default class Shell {
     }
 
     clearMusic() {
+        this.log('clearMusic');
         let player = this._player;
         this._player = null;
         this._music = null;
@@ -176,6 +193,7 @@ export default class Shell {
         this._lyrics = null;
         if (player) {
             this._volume = player.getVolume();
+            this.log('playClose');
             player.close();
         }
     }

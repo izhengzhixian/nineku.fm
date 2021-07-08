@@ -12,6 +12,8 @@ export default class SoundPlayer {
     _speaker = new Speaker();
     _play = false;
     _volume_rate = 100;
+    _callback: () => void;
+    _uri = "";
 
     constructor(volume_rate: number) {
         this._volume_rate = volume_rate;
@@ -19,7 +21,15 @@ export default class SoundPlayer {
     }
 
     setCloseCallback(callback: closeCallback) {
-        this._speaker.on("close", callback);
+        this._callback = callback;
+    }
+
+    _closeCallback() {
+        if (this._callback) {
+            let callback = this._callback;
+            this._callback = null;
+            callback();
+        }
     }
 
     async _getURLStream(url: string) {
@@ -50,6 +60,10 @@ export default class SoundPlayer {
         let instream = await this.createStream(uri);
         this._ffmpeg = new Ffmpeg(instream);
         this._ffmpeg.toFormat('s16le').pipe(this._volume);
+        this._uri = uri;
+        this._speaker.on("close", () => {
+            this._closeCallback();
+        });
     }
 
     start(): boolean {
@@ -100,7 +114,8 @@ export default class SoundPlayer {
         if (this._ffmpeg) {
             this._ffmpeg.on('error', () => { });
             this._ffmpeg.kill('SIGTERM');
+            this._speaker.end();
+            this._ffmpeg = null;
         }
-        this._speaker.end();
     }
 };

@@ -113,7 +113,6 @@ export class UI {
         this.initLineIndent();
         this.initLines();
         this.afterInit();
-        this._terminal.hiddenCursor();
     }
 
     setShow(show=true) {
@@ -130,6 +129,9 @@ export class UI {
     run(refresh_callback: () => void, interval=100) {
         if (this._run) {
             return;
+        }
+        if (this._show) {
+            this._terminal.hiddenCursor();
         }
         this._run = true;
         this.resize(this._terminal.getWidth(),
@@ -409,7 +411,7 @@ export class UI {
     }
 
     close(clear=true) {
-        if (clear) {
+        if (clear && this._show) {
             this._terminal.clearConsole();
         }
         this._terminal.displayCursor();
