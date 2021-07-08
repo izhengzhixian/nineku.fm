@@ -1,6 +1,6 @@
 {
   "name": "nineku.fm",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "九酷fm终端版，依赖于ffmpeg",
   "repository": "https://github.com/izhengzhixian/nineku.fm",
   "main": "index.js",

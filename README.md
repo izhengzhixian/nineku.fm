@@ -26,6 +26,9 @@ npm安装
 
     npm install -g nineku.fm
 
+MAC下安装
+    npm install -g nineku.fm --mpg123-backend=openal
+
 windows64位下安装编译会出现问题，需要在cmd中更改成64位编译模式，请参考：
 https://msdn.microsoft.com/zh-cn/library/x4d2c09s.aspx
 后运行安装命令
@@ -39,6 +42,9 @@ https://msdn.microsoft.com/zh-cn/library/x4d2c09s.aspx
 ### 日志：
 
 -----------------------------
+
+### v2.0.1
+1. 修复关闭歌曲后的回调bug
 
 ### v2.0.0
 1. 用typescript重构
