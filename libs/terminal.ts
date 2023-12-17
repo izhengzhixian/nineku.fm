@@ -1,4 +1,4 @@
-import * as keypress from 'keypress';
+import keypress from 'keypress';
 
 export enum KeyPressEvent {
     KEYPRESS = "keypress",

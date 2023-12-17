@@ -1,4 +1,4 @@
-import * as os from 'os';
+import os from 'os';
 
 export default class Timer {
     _play_time = 0;

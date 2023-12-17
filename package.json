@@ -1,26 +1,28 @@
 {
   "name": "nineku.fm",
-  "version": "2.0.1",
-  "description": "九酷fm终端版，依赖于ffmpeg",
+  "version": "2.0.2",
+  "description": "九酷fm终端版, 依赖于ffmpeg",
   "repository": "https://github.com/izhengzhixian/nineku.fm",
   "main": "index.js",
   "bin": {
     "nineku.fm": "bin/nineku.fm.js"
   },
   "dependencies": {
-    "cheerio": "^1.0.0-rc.10",
+    "cheerio": "^1.0.0-rc.12",
     "fluent-ffmpeg": "^2.1.2",
     "keypress": "^0.2.1",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.7.0",
     "pcm-volume": "^1.0.0",
-    "proxy-agent": "^4.0.1",
-    "speaker": "^0.5.3"
+    "proxy-agent": "^6.3.1",
+    "speaker": "^0.5.4"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.29",
-    "@types/node": "^15.12.4",
-    "@types/node-fetch": "^2.5.10",
-    "typescript": "^4.3.4"
+    "@types/cheerio": "^0.22.35",
+    "@types/node": "^20.10.4",
+    "@types/node-fetch": "^2.6.9",
+    "pcm-volume": "^1.0.0",
+    "@types/pcm-volume": "^1.0.2",
+    "typescript": "^5.3.3"
   },
   "scripts": {
     "start": "node dist/bin/nineku.fm",

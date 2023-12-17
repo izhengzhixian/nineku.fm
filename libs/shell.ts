@@ -52,11 +52,13 @@ export default class Shell {
         if (this._player) {
             this.log('closeCallback clear');
             this.clearMusic();
-            return;
         }
         if (this._next) {
             this.randomMusic();
-        } else if (this._musics.length == 0) {
+            return;
+        }
+        this._next = true;
+        if (this._musics.length == 0) {
             this.selectStyle();
         } else {
             this.selectStyle(this._category_pos, this._style_pos);

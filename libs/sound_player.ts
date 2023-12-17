@@ -1,13 +1,14 @@
-import * as fs from 'fs';
-import * as Ffmpeg from "fluent-ffmpeg";
-import * as Volume from "pcm-volume";
-import * as Speaker from "speaker";
+import fs from 'fs';
+import FfmpegCommand from "fluent-ffmpeg";
+import Volume from "pcm-volume";
+import Speaker from "speaker";
 import { node_fetch as fetch } from './fetch';
+import { Readable } from 'stream';
 
 declare type closeCallback = () => void;
 
 export default class SoundPlayer {
-    _ffmpeg: Ffmpeg = null;
+    _ffmpeg: FfmpegCommand = null;
     _volume = new Volume();
     _speaker = new Speaker();
     _play = false;
@@ -34,12 +35,12 @@ export default class SoundPlayer {
 
     async _getURLStream(url: string) {
         let resp = await fetch(url);
-        return resp.body;
+        return new Readable().wrap(resp.body);
     }
 
     async createStream(uri: string) {
         if (this._isURL(uri)) {
-            return this._getURLStream(uri);
+            return await this._getURLStream(uri);
         }
         return fs.createReadStream(uri);
     }
@@ -57,8 +58,8 @@ export default class SoundPlayer {
     }
 
     async load(uri: string) {
-        let instream = await this.createStream(uri);
-        this._ffmpeg = new Ffmpeg(instream);
+        let stream = await this.createStream(uri);
+        this._ffmpeg = new FfmpegCommand(stream);
         this._ffmpeg.toFormat('s16le').pipe(this._volume);
         this._uri = uri;
         this._speaker.on("close", () => {

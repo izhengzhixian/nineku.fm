@@ -1,4 +1,4 @@
-import { node_fetch as fetch } from './fetch';
+import fetch from './fetch';
 
 export class LyricLine {
     _time: number = 0;

@@ -44,6 +44,10 @@ https://msdn.microsoft.com/zh-cn/library/x4d2c09s.aspx
 
 -----------------------------
 
+### v2.0.2
+1. 修复mp3 url无效
+2. 修复没有自动播放下一首
+
 ### v2.0.1
 1. 修复关闭歌曲后的回调bug
 

@@ -2,8 +2,8 @@ import { Category, MusicStyle, Music,
          CategoryLoader, SimpleCategory, registerMusicLoader } from '../category';
 import { Lyrics } from '../lyrics';
 import { node_fetch as fetch } from '../fetch';
-
-import * as cheerio from "cheerio";
+import url from 'url';
+import cheerio from "cheerio";
 
 
 class NinekuLyrics extends Lyrics {
@@ -61,7 +61,14 @@ class NinekuMusic extends Music {
     }
 
     getURI(): string {
-        return this._data["mp3"];
+        let uri = this._data["mp3"];
+        if (!uri) {
+            return uri;
+        }
+        let u = url.parse(uri, false);
+        u.host = "mp3app.haoge500.com";
+        u.protocol = "https";
+        return url.format(u);
     }
 };
 
