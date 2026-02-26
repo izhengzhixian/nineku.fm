@@ -1,27 +1,22 @@
 {
   "name": "nineku.fm",
-  "version": "2.0.2",
-  "description": "九酷fm终端版, 依赖于ffmpeg",
+  "version": "3.0.0",
+  "description": "九酷fm终端版, 依赖于mpv",
   "repository": "https://github.com/izhengzhixian/nineku.fm",
   "main": "index.js",
-  "bin": {
-    "nineku.fm": "bin/nineku.fm.js"
-  },
+  "bin": "bin/nineku.fm.js",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.12",
-    "fluent-ffmpeg": "^2.1.2",
+    "cheerio": "^1.2.0",
+    "jschardet": "^3.1.4",
     "keypress": "^0.2.1",
-    "node-fetch": "^2.7.0",
-    "pcm-volume": "^1.0.0",
-    "proxy-agent": "^6.3.1",
-    "speaker": "^0.5.4"
+    "mpv": "^2.0.3",
+    "prexit": "^2.3.0",
+    "undici": "^7.19.1"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.35",
-    "@types/node": "^20.10.4",
-    "@types/node-fetch": "^2.6.9",
-    "pcm-volume": "^1.0.0",
-    "@types/pcm-volume": "^1.0.2",
+    "@types/node": "^25.3.1",
+    "@types/node-fetch": "^3.0.2",
     "typescript": "^5.3.3"
   },
   "scripts": {
@@ -29,5 +24,6 @@
     "build": "rm -rf dist && tsc && cp package.json dist"
   },
   "author": "izhengzhixian",
-  "license": "ISC"
+  "license": "ISC",
+  "packageManager": "yarn@4.12.0"
 }

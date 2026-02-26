@@ -1,87 +1,76 @@
-import fs from 'fs';
-import FfmpegCommand from "fluent-ffmpeg";
-import Volume from "pcm-volume";
-import Speaker from "speaker";
-import { node_fetch as fetch } from './fetch';
-import { Readable } from 'stream';
+import mpv, { MpvInstance } from './mpv';
 
 declare type closeCallback = () => void;
 
 export default class SoundPlayer {
-    _ffmpeg: FfmpegCommand = null;
-    _volume = new Volume();
-    _speaker = new Speaker();
-    _play = false;
-    _volume_rate = 100;
-    _callback: () => void;
-    _uri = "";
+    private _mpv: MpvInstance | null = null;
+    private _play = false;
+    private _volume_rate = 100;
+    private _callback: closeCallback | null = null;
+    private _uri = "";
 
     constructor(volume_rate: number) {
         this._volume_rate = volume_rate;
-        this.updateVolume();
     }
 
     setCloseCallback(callback: closeCallback) {
         this._callback = callback;
     }
 
-    _closeCallback() {
+    private _closeCallback() {
         if (this._callback) {
-            let callback = this._callback;
+            const callback = this._callback;
             this._callback = null;
             callback();
         }
     }
 
-    async _getURLStream(url: string) {
-        let resp = await fetch(url);
-        return new Readable().wrap(resp.body);
-    }
-
-    async createStream(uri: string) {
-        if (this._isURL(uri)) {
-            return await this._getURLStream(uri);
+    /**
+     * Ensure there is an mpv instance available. Creates one if necessary.
+     */
+    private async _ensureMpv(): Promise<MpvInstance> {
+        if (this._mpv && this._mpv.status !== 'closed') {
+            return this._mpv;
         }
-        return fs.createReadStream(uri);
-    }
-
-    updateVolume() {
-        this._volume.setVolume(this.getVolume() / 100);
-    }
-
-    _isURL(uri: string): boolean {
-        if (uri.startsWith("http://")
-            || uri.startsWith("https://")) {
-            return true;
-        }
-        return false;
-    }
-
-    async load(uri: string) {
-        let stream = await this.createStream(uri);
-        this._ffmpeg = new FfmpegCommand(stream);
-        this._ffmpeg.toFormat('s16le').pipe(this._volume);
-        this._uri = uri;
-        this._speaker.on("close", () => {
+        this._mpv = await mpv();
+        // when the file ends, notify the close callback
+        this._mpv.on('end-file', () => {
+            // mpv may emit multiple end-file events; only trigger once
             this._closeCallback();
         });
+        return this._mpv;
+    }
+
+    /**
+     * Load a URI into mpv. The file will be paused after loading; call start() to begin playback.
+     */
+    async load(uri: string) {
+        this.close(); // dispose previous player if any
+        this._uri = uri;
+
+        const player = await this._ensureMpv();
+        // load the resource (mpv will start playing immediately)
+        await player.command('loadfile', uri, 'replace');
+        // apply volume setting
+        await player.set('volume', this._volume_rate);
+        // pause until explicit start
+        await player.set('pause', true);
     }
 
     start(): boolean {
-        if (this._play) {
-            return false;
-        }
+        if (this._play || !this._mpv) return false;
+
         this._play = true;
-        this._volume.pipe(this._speaker);
+        // un-pause player
+        this._mpv.set('pause', false).catch(() => {});
         return true;
     }
 
     pause() {
-        if (!this._play) {
-            return false;
-        }
+        if (!this._play || !this._mpv) return false;
+
         this._play = false;
-        this._volume.unpipe();
+        this._mpv.set('pause', true).catch(() => {});
         return true;
     }
 
@@ -90,16 +79,16 @@ export default class SoundPlayer {
     }
 
     upVolume() {
-        if (this._volume_rate < 125) {
-            this._volume_rate++;
-            this.updateVolume();
+        this._volume_rate = Math.min(this._volume_rate + 1, 125);
+        if (this._mpv) {
+            this._mpv.set('volume', this._volume_rate).catch(() => {});
         }
     }
 
     downVolume() {
-        if (this._volume_rate > 0) {
-            this._volume_rate--;
-            this.updateVolume();
+        this._volume_rate = Math.max(this._volume_rate - 1, 0);
+        if (this._mpv) {
+            this._mpv.set('volume', this._volume_rate).catch(() => {});
         }
     }
 
@@ -108,15 +97,17 @@ export default class SoundPlayer {
     }
 
     hasMusic() {
-        return !!this._ffmpeg;
+        return !!this._mpv && this._uri !== "";
     }
 
     close() {
-        if (this._ffmpeg) {
-            this._ffmpeg.on('error', () => { });
-            this._ffmpeg.kill('SIGTERM');
-            this._speaker.end();
-            this._ffmpeg = null;
+        if (this._mpv) {
+            // stop playback and teardown mpv process
+            this._mpv.command('stop').catch(() => {});
+            this._mpv.end();
+            this._mpv = null;
         }
+        this._play = false;
+        this._uri = "";
     }
-};
+}

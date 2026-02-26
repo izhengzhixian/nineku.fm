@@ -19,7 +19,7 @@ export abstract class Music {
         };
     }
 
-    static fromJSON(data: Object): Music {
+    static fromJSON(data: any): Music {
         return loadMusic(data["name"], data["data"]);
     }
 };
@@ -45,7 +45,7 @@ export class SimpleMusicStyle extends MusicStyle {
     _name = "";
     _musics = new Array<Music>();
 
-    constructor(name: string, musics: Array<Music>=null, allow_remove=true) {
+    constructor(name: string, musics: Array<Music> | null = null, allow_remove=true) {
         super();
         this._name = name;
         if (musics) {
@@ -69,10 +69,10 @@ export class SimpleMusicStyle extends MusicStyle {
         };
     }
 
-    static fromJSON(data: Object): MusicStyle {
+    static fromJSON(data: any): MusicStyle {
         return new SimpleMusicStyle(
             data["name"],
-            data["musics"].map(music => Music.fromJSON(music)
+            data["musics"].map((music: any) => Music.fromJSON(music)
             ), false);
     }
 }
@@ -81,7 +81,7 @@ export class SimpleCategory extends Category {
     _name = "";
     _styles = new Array<MusicStyle>();
 
-    constructor(name: string, styles: Array<MusicStyle>=null, allow_random=true) {
+    constructor(name: string, styles: Array<MusicStyle> | null = null) {
         super();
         this._name = name;
         if (styles) {
@@ -104,11 +104,11 @@ export class SimpleCategory extends Category {
         };
     }
 
-    static fromJSON(data: Object): Category {
+    static fromJSON(data: any): Category {
         return new SimpleCategory(
-            data["name"], data["styles"].map(style =>
+            data["name"], data["styles"].map((style: any) =>
                 SimpleMusicStyle.fromJSON(style)
-            ), false);
+            ));
     }
 }
 
@@ -124,7 +124,7 @@ export function registerMusicLoader(name: string, loader: MusicLoader) {
 }
 
 export function getMusicLoader(name: string): MusicLoader {
-    return musicLoaderMap.get(name);
+    return musicLoaderMap.get(name)!;
 }
 
 export function loadMusic(name: string, data: Object): Music {

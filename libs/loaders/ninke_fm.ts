@@ -1,15 +1,18 @@
 import { Category, MusicStyle, Music,
          CategoryLoader, SimpleCategory, registerMusicLoader } from '../category';
 import { Lyrics } from '../lyrics';
-import { node_fetch as fetch } from '../fetch';
+import { fetch_text } from '../fetch';
 import url from 'url';
-import cheerio from "cheerio";
+import * as cheerio from 'cheerio';
 
 
 class NinekuLyrics extends Lyrics {
     modifyData(data: string): string {
-        let items = data.split("$song_Lrc");
-        return items[1];
+        if (!data) {
+            return "";
+        }
+        let $ = cheerio.load(data);
+        return $("#lrc_content").text();
     }
 }
 
@@ -17,7 +20,7 @@ let COMPONETN_NAME = "nineku.fm";
 
 class NinekuMusic extends Music {
     _data: any;
-    _lyrics: Lyrics;
+    _lyrics: Lyrics | null = null;
     constructor(data: any) {
         super();
         this._data = data;
@@ -55,7 +58,8 @@ class NinekuMusic extends Music {
         this._lyrics = new NinekuLyrics();
         let lrc_group_id = Math.floor(this._data["gqid"] / 10000) + 1;
         let gqid = this._data["gqid"];
-        let lrc = `https://www.9ku.com/html/lrc/${lrc_group_id}/${gqid}.js`;
+        //let lrc = `https://www.9ku.com/html/lrc/${lrc_group_id}/${gqid}.js`;
+        let lrc = `https://www.9ku.com/play/${gqid}.htm`;
         await this._lyrics.loadURL(lrc);
         return this._lyrics;
     }
@@ -65,12 +69,13 @@ class NinekuMusic extends Music {
         if (!uri) {
             return uri;
         }
-        let u = url.parse(uri, false);
+        let u = new URL(uri);
         u.host = "mp3app.haoge500.com";
-        u.protocol = "https";
+        u.protocol = "http";
         return url.format(u);
     }
 };
+
 
 class NinekuMusicStyle extends MusicStyle {
     _name = "";
@@ -91,10 +96,9 @@ class NinekuMusicStyle extends MusicStyle {
     async getMusics(): Promise<Array<Music>> {
         if (!this._load) {
             this._load = true;
-            let resp = await fetch(this._link);
-            let text = await resp.text();
+            let text = await fetch_text(this._link);
             let music_list = JSON.parse(text.slice(24, -17));
-            music_list.forEach(item => {
+            music_list.forEach((item: any) => {
                 this._musics.push(new NinekuMusic(item));
             });
         }
@@ -111,8 +115,8 @@ export default class Loader implements CategoryLoader {
 
     async getCategories(): Promise<Array<Category>> {
         let url = "https://www.9ku.com/fm/";
-        let resp = await fetch(url);
-        let $ = cheerio.load(await resp.buffer());
+        let html = await fetch_text(url);
+        let $ = cheerio.load(html);
         let fenge_head = $("ul.fmNav.clearfix li a");
         fenge_head.each((index, elem: cheerio.TagElement) => {
             let name = elem.children[0].data;

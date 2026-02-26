@@ -1,4 +1,4 @@
-import fetch from './fetch';
+import { fetch_text } from './fetch';
 
 export class LyricLine {
     _time: number = 0;
@@ -52,8 +52,9 @@ export class Lyrics {
     }
 
     async loadURL(url: string) {
-        let resp = await fetch(url);
-        let body = await resp.text();
+        let body = await fetch_text(url);
+        //console.log(url);
+        //console.log(body);
         return this.loadData(body);
     }
 

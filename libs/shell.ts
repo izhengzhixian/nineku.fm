@@ -21,12 +21,12 @@ function randomItems<T>(items: Array<T>, del=false): T {
 
 export default class Shell {
     _ui = new UI();
-    _config: ConfigLoader = null;
+    _config: ConfigLoader | null = null;
     _categorys = new Array<Category>();
-    _musics: Array<Music>;
-    _player: SoundPlayer = null;
-    _music: Music = null;
-    _lyrics: Lyrics = null;
+    _musics: Array<Music> = [];
+    _player: SoundPlayer | null = null;
+    _music: Music | null = null;
+    _lyrics: Lyrics | null = null;
     _timer = new Timer();
     _category_index = 0;
     _style_index = 0;
@@ -91,7 +91,7 @@ export default class Shell {
     async loadCategory() {
         let loaders = await loadAllLoaders();
         this.loadConfig();
-        loaders.push(this._config);
+        loaders.push(this._config!);
         for (let loader of loaders) {
             this._categorys.push(...(await loader.getCategories()));
         }
@@ -147,7 +147,6 @@ export default class Shell {
     }
 
     randomMusic() {
-        this.log('randomMusic');
         let music = randomItems(this._musics);
         this._music = music;
         this._loadMusic();
@@ -155,7 +154,7 @@ export default class Shell {
     }
 
     async _loadLyrics() {
-        this._lyrics = await this._music.getLyrics();
+        this._lyrics = await this._music!.getLyrics();
     }
 
     async _loadMusic() {
@@ -166,21 +165,21 @@ export default class Shell {
             });
         }
         this._music_index++;
-        await this._player.load(this._music.getURI());
+        await this._player.load(this._music!.getURI());
         if (this._player) {
             this.startMusic();
         }
     }
 
     startMusic() {
-        if (this._player.start()) {
+        if (this._player!.start()) {
             this._timer.start();
             return;
         }
     }
 
     pauseMusic() {
-        if (this._player.pause()) {
+        if (this._player!.pause()) {
             this._timer.stop();
             return;
         }
@@ -269,15 +268,15 @@ export default class Shell {
             this.clearMusic();
         } else if (key.name == "s") {
             if (this._music) {
-                this._config.pushLikeStyle(this._music);
+                this._config!.pushLikeStyle(this._music);
             }
         } else if (key.name == "t") {
             if (this._music) {
-                this._config.pushHateStyle(this._music);
+                this._config!.pushHateStyle(this._music);
                 this.clearMusic();
             }
         } else if (key.name == "d") {
-            let index = this._musics.indexOf(this._music);
+            let index = this._musics.indexOf(this._music!);
             if (index < 0) {
                 this.setTip("从当前风格删除歌曲失败");
             } else {
@@ -332,7 +331,7 @@ export default class Shell {
         if (lyric_index < 0) {
             this._ui.clearLRC();
         } else {
-            this._ui.setLRC(this._lyrics.getLyricLine(), lyric_index-2);
+            this._ui.setLRC(this._lyrics!.getLyricLine(), lyric_index-2);
         }
     }
 }

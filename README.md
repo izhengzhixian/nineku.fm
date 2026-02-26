@@ -12,27 +12,10 @@ nineku.fm
 
 ---------------------------------------
 
-
-#### 依赖
-
 ``` sh
-
-sudo apt install libasound2-dev ffmpeg -y
-
+sudo apt install mpv -y
+npm install -g nineku.fm
 ```
-
-
-npm安装
-
-    npm install -g nineku.fm
-
-MAC下安装
-
-    npm install -g nineku.fm --mpg123-backend=openal
-
-windows64位下安装编译会出现问题，需要在cmd中更改成64位编译模式，请参考：
-https://msdn.microsoft.com/zh-cn/library/x4d2c09s.aspx
-后运行安装命令
 
 ### 运行:
 
@@ -43,6 +26,10 @@ https://msdn.microsoft.com/zh-cn/library/x4d2c09s.aspx
 ### 日志：
 
 -----------------------------
+
+### v3.0.0
+1. 适配新的网页结构
+2. 使用mpv播放音频
 
 ### v2.0.2
 1. 修复mp3 url无效

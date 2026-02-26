@@ -8,19 +8,13 @@ import {
 } from './category';
 
 class Config {
-    username = "";
-    password = "";
-    email = "";
     volume = 50;
     categorys = new Array<Category>();
 
-    static fromJSON(data: Object): Config {
+    static fromJSON(data: any): Config {
         let config = new Config();
-        config.username = data["username"];
-        config.password = data["password"];
-        config.email = data["email"];
         config.volume = data["volume"];
-        data["categorys"].forEach(category => {
+        data["categorys"].forEach((category: any) => {
             config.categorys.push(SimpleCategory.fromJSON(category));
         });
         return config;
@@ -31,18 +25,18 @@ export default class ConfigLoader implements CategoryLoader {
     _config_dir = path.join(os.homedir(), ".config/nineku.fm");
     _config_path = path.join(this._config_dir, "config.json");
     _encoding: BufferEncoding = "utf-8";
-    _config: Config = null;
+    _config: Config | null = null;
 
     constructor() {
     }
 
     getVolumn(): number {
-        return this._config.volume;
+        return this._config!.volume;
     }
 
     setVolumn(volumn: number) {
         if (volumn >= 0 && volumn <= 150) {
-            this._config.volume = volumn;
+            this._config!.volume = volumn;
         }
     }
 
@@ -55,13 +49,13 @@ export default class ConfigLoader implements CategoryLoader {
     }
 
     getLikeStyle(): MusicStyle {
-        return this._config.categorys[0].getStyles().find(
-            style => style.getName() == "喜欢");
+        return this._config!.categorys[0].getStyles().find(
+            style => style.getName() == "喜欢")!;
     }
 
     getHateStyle(): MusicStyle {
-        return this._config.categorys[0].getStyles().find(
-            style => style.getName() == "讨厌");
+        return this._config!.categorys[0].getStyles().find(
+            style => style.getName() == "讨厌")!;
     }
 
     defaultConfig(): Config {
@@ -75,7 +69,7 @@ export default class ConfigLoader implements CategoryLoader {
     }
 
     async getCategories(): Promise<Array<Category>> {
-        return this._config.categorys;
+        return this._config!.categorys;
     }
 
     load(): boolean {

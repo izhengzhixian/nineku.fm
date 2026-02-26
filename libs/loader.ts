@@ -6,6 +6,7 @@ import { CategoryLoader } from './category';
 const LOADERS_DIR = path.join(__dirname, 'loaders');
 
 export async function loadAllLoaders(): Promise<Array<CategoryLoader>> {
+    fetch
     let loader_paths = fs.readdirSync(LOADERS_DIR).map(
         (name) => {
             if (!name.endsWith(".js")) {
@@ -23,6 +24,7 @@ export async function loadAllLoaders(): Promise<Array<CategoryLoader>> {
 
     for (let loader_path of loader_paths) {
         let loader = await import(loader_path);
+        console.log(`Loaded category loader: ${loader_path}`);
         loaders.push(new loader.default());
     }
     return loaders;
